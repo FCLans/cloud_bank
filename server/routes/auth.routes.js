@@ -73,6 +73,14 @@ router.post(
           .json({ message: 'Такой пользователь не зарегистрирован' })
       }
 
+      const isMatch = await bcrypt.compare(password, user.password)
+
+      if (!isMatch) {
+        return res
+          .status(401)
+          .json({ message: 'Пароль или почта введены неправильно' })
+      }
+
       const token = jwt.sign({ id: user.id }, config.get('jwtSecret'), {
         expiresIn: '1h',
       })
